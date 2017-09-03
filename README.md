@@ -1,6 +1,33 @@
 # CarND-Controls-PID
 Self-Driving Car Engineer Nanodegree Program
 
+## Reflection
+
+The code in PID.cpp aims to implement a PID controller which tries to minimize the error of the control output to the desired trajectory of the car driving along a track.
+
+PID stands for Proportional Integral Derivate Controller and it is a control loop feedback mechanism used in systems which require continuosly modulated control. It takes a measurement from a sensor and applies correction to a control function to minimize the error difference to a desired setpoint value.
+
+PID controller takes three terms (Proportional gain, Integral gain and Derivate gain) which are used to calculated the weighted sum of the error:
+* P computes a proportional value to the Cross Track Error (CTE). It modifies the steer to make the car converge to the desired trajectory. However, P controller alone would result in a highly unstable and oscillating behavior.
+* I accumulates the past CTE and integrates them over the time. The integral term seeks to eliminate the error by contributing a control effect due to the historic and present cumulative value of the error. Using this term, biases can be mitigated if for example a zero steering angle doesn't correspond to a straight trajectory.
+* D seeks to reduce the effect of the CTE. The proportional derivative term can help to reduce the oscillating behavior of the P proportional term.
+
+The fomula used to update the error:
+```
+Kp*cte + Ki*sum(cte)+ Kd*(cte - previous_cte)
+```
+### Hyperparameters selection
+The throttle was adjusted to 0.48, so that the car reached a speed of almost 55 mph in the simulator. A that speed, the values which proved to make the car follow the track whithin the road boundaries where:
+* P: -0.07
+* I: 0.0
+* D: -0.8
+
+The values where tuned manually, so that it was easier to check the effects of any change to them on the car trajectory. To ease this process, the values were passed as arguments in the command line. If no values are passed, the code takes the values above as the default.
+
+The speed of the car is decisive when choosing the parameters. Higher speeds require lower values of P, otherwise the car will fall out of the track. For this reason, if different value of throttle is chosen, the values above won't work, and the car will loose the track. An important improvement would be to implement an dynamic parameters selection proportional to the vehicle speed. 
+
+Also, the CPU processing speed to render simulator graphics plays an important role. The same code run in a computer which runs the simulator slower (even when the vehicle output speed is the same) will produce different results for the same parameters. For this reason, an output video is provided, with the controller running with parameters set to the above mentioned values.
+
 ---
 
 ## Dependencies
